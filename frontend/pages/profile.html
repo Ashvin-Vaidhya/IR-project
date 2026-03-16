@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — IPR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+<div class="app-layout">
+  <main class="main-content" id="mainContent">
+
+    <div style="max-width:900px">
+      <!-- HEADER -->
+      <div class="page-header stagger">
+        <div class="page-header-left">
+          <h1>My Profile</h1>
+          <p>Manage your account details and preferences</p>
+        </div>
+        <button class="btn btn-primary" onclick="saveProfile()">💾 Save Changes</button>
+      </div>
+
+      <!-- PROFILE CARD -->
+      <div class="card mb-3" style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+        <div id="profileAvatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7b5ea7);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:white;flex-shrink:0">PS</div>
+        <div style="flex:1">
+          <h2 id="profileName" style="font-size:1.5rem;margin-bottom:0.25rem">Dr. Priya Sharma</h2>
+          <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+            <span class="badge badge-teal" id="profileRole">Researcher</span>
+            <span style="font-size:0.82rem;color:var(--slate)">📍 IIT Nagpur</span>
+            <span style="font-size:0.82rem;color:var(--slate)">📅 Joined Jan 2024</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:0.75rem;color:var(--slate);margin-bottom:0.25rem">Profile Completion</div>
+          <div style="font-size:1.5rem;font-weight:700;color:var(--teal)">85%</div>
+          <div class="progress-bar" style="width:120px;margin-top:0.35rem">
+            <div class="progress-fill" style="width:85%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stat-grid stagger" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.5rem">
+        <div class="stat-card teal">
+          <div class="stat-icon">📂</div>
+          <div class="stat-value" id="myProjects">5</div>
+          <div class="stat-label">My Projects</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-icon">⚖️</div>
+          <div class="stat-value" id="myIPR">3</div>
+          <div class="stat-label">IPR Filed</div>
+        </div>
+        <div class="stat-card rose">
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" id="myApproved">2</div>
+          <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">💰</div>
+          <div class="stat-value">₹3.2Cr</div>
+          <div class="stat-label">Funding Raised</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+        <!-- Personal Info -->
+        <div class="card">
+          <h3 style="margin-bottom:1.25rem">Personal Information</h3>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Dr. Priya Sharma" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="priya@iit.ac.in" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="userPhone" placeholder="+91 98765 43210" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <input type="text" class="form-control" id="userRole" readonly style="opacity:0.6;cursor:not-allowed" />
+          </div>
+        </div>
+
+        <!-- Professional Info -->
+        <div class="card">
+          <h3 style="margin-bottom:1.25rem">Professional Details</h3>
+          <div class="form-group">
+            <label class="form-label">Organization / Institution</label>
+            <input type="text" class="form-control" id="userOrg" placeholder="IIT Nagpur" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department / Specialization</label>
+            <input type="text" class="form-control" id="userDept" placeholder="Computer Science & AI" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Area of Research / Expertise</label>
+            <input type="text" class="form-control" id="userExpertise" placeholder="Machine Learning, Drug Discovery" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">LinkedIn Profile URL</label>
+            <input type="url" class="form-control" id="userLinkedIn" placeholder="https://linkedin.com/in/yourprofile" />
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="card" style="grid-column:1/-1">
+          <h3 style="margin-bottom:1.25rem">About Me</h3>
+          <div class="form-group">
+            <label class="form-label">Professional Bio</label>
+            <textarea class="form-control" id="userBio" rows="4" placeholder="Brief description of your research background, achievements, and goals..."></textarea>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="card" style="grid-column:1/-1">
+          <h3 style="margin-bottom:1.25rem">Change Password</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="curPass" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPass" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confPass" placeholder="••••••••" />
+            </div>
+          </div>
+          <button class="btn btn-outline" onclick="changePassword()">🔐 Update Password</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const user = IPR_APP.currentUser;
+  if (user) {
+    document.getElementById('profileName').textContent = user.name || 'User';
+    document.getElementById('profileRole').textContent = user.role || 'Researcher';
+    document.getElementById('profileAvatar').textContent = (user.name || 'U').substring(0,2).toUpperCase();
+    document.getElementById('fullName').value = user.name || '';
+    document.getElementById('userEmail').value = user.email || '';
+    document.getElementById('userRole').value = user.role || '';
+    document.getElementById('userOrg').value = user.organization || '';
+    document.getElementById('pageTitle').textContent = 'Profile';
+  }
+});
+
+function saveProfile() {
+  const user = IPR_APP.currentUser;
+  user.name = document.getElementById('fullName').value;
+  user.email = document.getElementById('userEmail').value;
+  user.organization = document.getElementById('userOrg').value;
+  localStorage.setItem('ipr_user', JSON.stringify(user));
+  IPR_APP.toast('Profile updated successfully!', 'success');
+}
+
+function changePassword() {
+  const cur = document.getElementById('curPass').value;
+  const np = document.getElementById('newPass').value;
+  const cp = document.getElementById('confPass').value;
+  if (!cur || !np) { IPR_APP.toast('Please fill in all password fields', 'error'); return; }
+  if (np !== cp) { IPR_APP.toast('New passwords do not match', 'error'); return; }
+  if (np.length < 8) { IPR_APP.toast('Password must be at least 8 characters', 'error'); return; }
+  IPR_APP.toast('Password updated successfully!', 'success');
+  document.getElementById('curPass').value = '';
+  document.getElementById('newPass').value = '';
+  document.getElementById('confPass').value = '';
+}
+</script>
+</body>
+</html>

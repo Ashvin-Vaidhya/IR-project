@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investor Hub — IPR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+<div class="app-layout">
+  <main class="main-content" id="mainContent">
+
+    <div class="page-header stagger">
+      <div class="page-header-left">
+        <h1>Investor Hub</h1>
+        <p>Discover breakthrough research projects and connect with innovative researchers.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="IPR_APP.toast('Watchlist updated','info')">⭐ My Watchlist</button>
+        <button class="btn btn-gold" onclick="IPR_APP.openModal('investModal')">💰 Express Interest</button>
+      </div>
+    </div>
+
+    <!-- INVESTOR STATS -->
+    <div class="stat-grid stagger">
+      <div class="stat-card teal"><div class="stat-icon">🔬</div><div class="stat-value">23</div><div class="stat-label">Projects Open</div></div>
+      <div class="stat-card gold"><div class="stat-icon">💰</div><div class="stat-value">₹18.4Cr</div><div class="stat-label">Total Invested</div></div>
+      <div class="stat-card blue"><div class="stat-icon">📈</div><div class="stat-value">12</div><div class="stat-label">Portfolio Projects</div></div>
+      <div class="stat-card rose"><div class="stat-icon">🎯</div><div class="stat-value">₹6.2Cr</div><div class="stat-label">Funding Gap</div></div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="card mb-3 stagger">
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+        <input type="text" id="searchInv" class="form-control" style="flex:1;min-width:200px" placeholder="🔍 Search projects, technologies, researchers..." oninput="filterInv()" />
+        <select class="form-control" style="width:auto" id="filterDomain" onchange="filterInv()">
+          <option value="">All Domains</option><option>AI/ML</option><option>Biotechnology</option><option>Cryptography</option>
+          <option>Renewable Energy</option><option>Robotics</option><option>Nanotechnology</option>
+        </select>
+        <select class="form-control" style="width:auto" id="filterFunding" onchange="filterInv()">
+          <option value="">Any Funding</option><option value="small">Under ₹1Cr</option><option value="mid">₹1-5Cr</option><option value="large">Above ₹5Cr</option>
+        </select>
+        <select class="form-control" style="width:auto" id="filterIPRStatus" onchange="filterInv()">
+          <option value="">Any IPR Status</option><option>Approved</option><option>Filed</option><option>Under Review</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- INVESTOR CARDS GRID -->
+    <div class="stagger" id="investorGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;margin-bottom:2rem"></div>
+
+    <!-- INVESTMENT PORTFOLIO TABLE -->
+    <div class="card">
+      <div class="flex-between mb-2">
+        <h3>My Investment Portfolio</h3>
+        <div style="display:flex;gap:0.5rem">
+          <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('Portfolio report generated','info')">📊 Report</button>
+          <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('Data exported','info')">📥 Export</button>
+        </div>
+      </div>
+      <div class="chart-container mb-2"><canvas id="portfolioChart"></canvas></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- EXPRESS INTEREST MODAL -->
+<div class="modal-overlay" id="investModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">💰 Express Investment Interest</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('investModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Select Project *</label>
+        <select id="investProject" class="form-control">
+          <option value="">Choose a project</option>
+          <option>AI-Based Drug Discovery System</option>
+          <option>BioSensor for Glucose Monitoring</option>
+          <option>Quantum Encryption Protocol</option>
+          <option>Solar Cell Efficiency Research</option>
+          <option>Smart Agriculture IoT Platform</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Investment Amount (₹ Lakh) *</label>
+          <input type="number" id="investAmount" class="form-control" placeholder="e.g. 50" min="1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Investment Type</label>
+          <select id="investType" class="form-control">
+            <option>Equity</option><option>Grant</option><option>Loan</option><option>Milestone-based</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Organization</label>
+        <input type="text" id="investOrg" class="form-control" placeholder="e.g. Tata Capital, SIDBI Venture" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message to Researcher</label>
+        <textarea id="investMsg" class="form-control" rows="3" placeholder="Brief message about your interest and what you bring beyond capital..."></textarea>
+      </div>
+      <div style="padding:0.75rem;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:8px;font-size:0.8rem;color:var(--gold)">
+        ℹ️ Your interest will be forwarded to the research team. They will respond within 3-5 business days.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('investModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="submitInterest()">💰 Submit Interest</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT DETAIL MODAL -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-header">
+      <h3 class="modal-title" id="projModalTitle">Project Details</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('projectModal')">✕</button>
+    </div>
+    <div class="modal-body" id="projModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('projectModal')">Close</button>
+      <button class="btn btn-outline" onclick="IPR_APP.toast('Added to watchlist ⭐','success')">⭐ Watchlist</button>
+      <button class="btn btn-gold" onclick="IPR_APP.closeModal('projectModal');IPR_APP.openModal('investModal')">💰 Express Interest</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="../js/app.js"></script>
+<script>
+const INVEST_PROJECTS = [
+  {
+    id:1, title:'AI-Based Drug Discovery System', researcher:'Dr. Priya Sharma', institution:'IIT Bombay',
+    domain:'AI/ML', funding:'₹5Cr', raised:'₹3.2Cr', progress:64, ipr:'Under Review', status:'Active',
+    desc:'Using transformer neural networks to predict drug-protein binding for rare disease treatments. 3 patents pending.',
+    tags:['Healthcare', 'Deep Learning', 'Drug Discovery'], returns:'Projected 3.2x in 4 years',
+    team:4, watchlisted:false, fundingNum:500, raisedNum:320
+  },
+  {
+    id:2, title:'BioSensor for Glucose Monitoring', researcher:'Dr. Neha Roy', institution:'IISc Bangalore',
+    domain:'Biotechnology', funding:'₹2Cr', raised:'₹1.8Cr', progress:90, ipr:'Approved', status:'Active',
+    desc:'Non-invasive glucose monitoring biosensor using graphene nanocomposites. Patent approved, market-ready in 6 months.',
+    tags:['Medical Devices', 'Nanotechnology', 'Wearables'], returns:'Projected 5x in 3 years',
+    team:5, watchlisted:true, fundingNum:200, raisedNum:180
+  },
+  {
+    id:3, title:'Quantum Encryption Protocol', researcher:'Dr. Aman Verma', institution:'TIFR Mumbai',
+    domain:'Cryptography', funding:'₹3.5Cr', raised:'₹0.7Cr', progress:20, ipr:'Filed', status:'Under Review',
+    desc:'Post-quantum cryptography for government and banking communications. Partnership with DRDO under discussion.',
+    tags:['Cybersecurity', 'Quantum Computing', 'Defence'], returns:'Projected 4.5x in 5 years',
+    team:3, watchlisted:false, fundingNum:350, raisedNum:70
+  },
+  {
+    id:4, title:'Solar Cell Efficiency Enhancement', researcher:'Prof. Suresh Iyer', institution:'IIT Madras',
+    domain:'Renewable Energy', funding:'₹1.5Cr', raised:'₹0.4Cr', progress:27, ipr:'Pending', status:'Pending',
+    desc:'Novel perovskite-silicon tandem solar cells exceeding 30% efficiency. Collaboration with MNRE on pilot deployment.',
+    tags:['Clean Energy', 'Material Science', 'Climate Tech'], returns:'Projected 2.8x in 6 years',
+    team:2, watchlisted:false, fundingNum:150, raisedNum:40
+  },
+  {
+    id:5, title:'Smart Agriculture IoT Platform', researcher:'Prof. Raj Kumar', institution:'ICAR Delhi',
+    domain:'AI/ML', funding:'₹0.8Cr', raised:'₹0Cr', progress:15, ipr:'Pending', status:'Pending',
+    desc:'AI-powered precision farming platform using drone imagery, soil sensors, and weather prediction for smallholder farmers.',
+    tags:['AgriTech', 'IoT', 'Sustainability'], returns:'Projected 4x in 4 years',
+    team:3, watchlisted:false, fundingNum:80, raisedNum:0
+  },
+  {
+    id:6, title:'Nano-Robot Drug Delivery System', researcher:'Dr. Kavita Singh', institution:'AIIMS Delhi',
+    domain:'Nanotechnology', funding:'₹4Cr', raised:'₹4Cr', progress:100, ipr:'Approved', status:'Completed',
+    desc:'Targeted cancer therapy using magnetically guided nanorobots. Phase I clinical trials completed successfully.',
+    tags:['Cancer Therapy', 'Nanotech', 'Clinical'], returns:'Acquisition interest: ₹22Cr',
+    team:6, watchlisted:true, fundingNum:400, raisedNum:400
+  },
+];
+
+let filteredInv = [...INVEST_PROJECTS];
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pageTitle').textContent = 'Investor Hub';
+  renderInvestorCards(INVEST_PROJECTS);
+  IPR_APP.renderBar('portfolioChart',
+    INVEST_PROJECTS.map(p => p.title.length > 20 ? p.title.substring(0,20)+'...' : p.title),
+    [
+      { label: 'Funding Goal (₹ Lakh)', data: INVEST_PROJECTS.map(p => p.fundingNum), backgroundColor: 'rgba(136,150,179,0.3)', borderRadius: 6 },
+      { label: 'Amount Raised (₹ Lakh)', data: INVEST_PROJECTS.map(p => p.raisedNum), backgroundColor: 'rgba(0,201,167,0.7)', borderRadius: 6 },
+    ]
+  );
+});
+
+function renderInvestorCards(data) {
+  document.getElementById('investorGrid').innerHTML = data.map(p => `
+    <div class="card" style="display:flex;flex-direction:column;gap:0.75rem">
+      <div class="flex-between">
+        <span class="badge badge-review">${p.domain}</span>
+        <div style="display:flex;gap:0.35rem;align-items:center">
+          ${IPR_APP.statusBadge(p.ipr)}
+          <button onclick="toggleWatchlist(${p.id}, this)" style="background:none;border:none;cursor:pointer;font-size:1.2rem" title="Watchlist">${p.watchlisted ? '⭐' : '☆'}</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size:1rem;margin-bottom:0.35rem">${p.title}</h3>
+        <div class="text-xs text-slate">${p.researcher} · ${p.institution}</div>
+      </div>
+
+      <p style="font-size:0.8rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${p.desc}</p>
+
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+        ${p.tags.map(t => `<span style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.7rem;color:var(--slate-light)">${t}</span>`).join('')}
+      </div>
+
+      <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:0.75rem">
+        <div class="flex-between text-xs mb-1">
+          <span style="color:var(--slate)">Funding Goal</span>
+          <span style="color:var(--gold);font-weight:600">${p.funding}</span>
+        </div>
+        <div class="flex-between text-xs mb-1">
+          <span style="color:var(--slate)">Raised</span>
+          <span style="color:var(--teal);font-weight:600">${p.raised}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%;${p.progress===100?'background:linear-gradient(90deg,var(--gold),#f5c842)':''}"></div></div>
+        <div class="text-xs text-slate" style="margin-top:0.3rem;text-align:right">${p.progress}% funded</div>
+      </div>
+
+      <div style="font-size:0.75rem;color:var(--teal);font-weight:600">📈 ${p.returns}</div>
+
+      <div class="flex-between" style="margin-top:auto">
+        <button class="btn btn-outline btn-sm" onclick="openProjectDetail(${p.id})">📋 Details</button>
+        <button class="btn btn-gold btn-sm" onclick="expressInterest(${p.id})">${p.progress >= 100 ? '🤝 Acquire' : '💰 Invest'}</button>
+      </div>
+    </div>
+  `).join('') || '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No projects match</h3><p>Try adjusting your filters</p></div>';
+}
+
+function openProjectDetail(id) {
+  const p = INVEST_PROJECTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('projModalTitle').textContent = p.title;
+  document.getElementById('projModalBody').innerHTML = `
+    <div class="flex-between mb-3">
+      <div style="display:flex;gap:0.5rem">
+        <span class="badge badge-review">${p.domain}</span>
+        ${IPR_APP.statusBadge(p.ipr)}
+        ${IPR_APP.statusBadge(p.status)}
+      </div>
+    </div>
+    <p style="margin-bottom:1.5rem">${p.desc}</p>
+    <div class="grid-2 mb-3">
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Lead Researcher</div><div class="fw-600">${p.researcher}</div></div>
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Institution</div><div class="fw-600">${p.institution}</div></div>
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Funding Goal</div><div class="fw-600 text-gold">${p.funding}</div></div>
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Amount Raised</div><div class="fw-600 text-teal">${p.raised}</div></div>
+    </div>
+    <div class="mb-3">
+      <div class="flex-between text-sm mb-1"><span>Funding Progress</span><span class="text-teal fw-600">${p.progress}%</span></div>
+      <div class="progress-bar" style="height:10px"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+    </div>
+    <div style="padding:0.9rem;background:rgba(0,201,167,0.06);border:1px solid rgba(0,201,167,0.15);border-radius:10px;font-size:0.875rem">
+      📈 <strong>Projected Returns:</strong> ${p.returns}
+    </div>
+  `;
+  IPR_APP.openModal('projectModal');
+}
+
+function expressInterest(id) {
+  const p = INVEST_PROJECTS.find(x => x.id === id);
+  if (p) document.getElementById('investProject').value = p.title;
+  IPR_APP.openModal('investModal');
+}
+
+function toggleWatchlist(id, btn) {
+  const p = INVEST_PROJECTS.find(x => x.id === id);
+  if (p) {
+    p.watchlisted = !p.watchlisted;
+    btn.textContent = p.watchlisted ? '⭐' : '☆';
+    IPR_APP.toast(p.watchlisted ? 'Added to watchlist' : 'Removed from watchlist', 'info');
+  }
+}
+
+function filterInv() {
+  const search = document.getElementById('searchInv').value.toLowerCase();
+  const domain = document.getElementById('filterDomain').value;
+  const iprStatus = document.getElementById('filterIPRStatus').value;
+  filteredInv = INVEST_PROJECTS.filter(p =>
+    (!search || p.title.toLowerCase().includes(search) || p.researcher.toLowerCase().includes(search) || p.domain.toLowerCase().includes(search))
+    && (!domain || p.domain === domain)
+    && (!iprStatus || p.ipr === iprStatus)
+  );
+  renderInvestorCards(filteredInv);
+}
+
+function submitInterest() {
+  const project = document.getElementById('investProject').value;
+  const amount = document.getElementById('investAmount').value;
+  if (!project || !amount) { IPR_APP.toast('Please fill required fields', 'error'); return; }
+  IPR_APP.closeModal('investModal');
+  IPR_APP.toast(`Interest of ₹${amount} Lakh submitted for "${project}"!`, 'success');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — IPR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+<div class="app-layout">
+  <main class="main-content" id="mainContent">
+
+    <div class="page-header stagger">
+      <div class="page-header-left">
+        <h1>Project Management</h1>
+        <p>Create, manage, and track all your research projects and team assignments.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="toggleView()">⊞ Toggle View</button>
+        <button class="btn btn-primary" onclick="IPR_APP.openModal('projectModal')">➕ New Project</button>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="card mb-3 stagger">
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+        <div style="flex:1;min-width:200px">
+          <input type="text" id="searchProjects" class="form-control" placeholder="🔍 Search by title, researcher, or technology..." oninput="filterProjects()" />
+        </div>
+        <select class="form-control" style="width:auto" id="filterStatus" onchange="filterProjects()">
+          <option value="">All Statuses</option>
+          <option>Active</option><option>Pending</option><option>Under Review</option><option>Approved</option><option>Completed</option>
+        </select>
+        <select class="form-control" style="width:auto" id="filterDomain" onchange="filterProjects()">
+          <option value="">All Domains</option>
+          <option>AI/ML</option><option>Biotechnology</option><option>Cryptography</option>
+          <option>Renewable Energy</option><option>Robotics</option><option>Nanotechnology</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="resetFilters()">✕ Clear</button>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stat-grid stagger" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card teal"><div class="stat-icon">📂</div><div class="stat-value">47</div><div class="stat-label">Total</div></div>
+      <div class="stat-card gold"><div class="stat-icon">✅</div><div class="stat-value">31</div><div class="stat-label">Active</div></div>
+      <div class="stat-card rose"><div class="stat-icon">⏳</div><div class="stat-value">9</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card blue"><div class="stat-icon">🏆</div><div class="stat-value">7</div><div class="stat-label">Completed</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('list', this)">📋 List View</button>
+      <button class="tab-btn" onclick="switchTab('kanban', this)">🗂️ Kanban Board</button>
+      <button class="tab-btn" onclick="switchTab('myProjects', this)">👤 My Projects</button>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div class="tab-panel active" id="tabList">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Project Title</th>
+              <th>Researcher</th>
+              <th>Domain</th>
+              <th>Team</th>
+              <th>Start Date</th>
+              <th>Progress</th>
+              <th>IPR Status</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="projectsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KANBAN VIEW -->
+    <div class="tab-panel" id="tabKanban">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;overflow-x:auto">
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem">
+            <span style="width:10px;height:10px;border-radius:50%;background:var(--gold)"></span> Pending <span class="nav-badge">3</span>
+          </div>
+          <div id="kanban-pending"></div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem">
+            <span style="width:10px;height:10px;border-radius:50%;background:#4A9EFF"></span> Under Review <span class="nav-badge">2</span>
+          </div>
+          <div id="kanban-review"></div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem">
+            <span style="width:10px;height:10px;border-radius:50%;background:var(--teal)"></span> Active <span class="nav-badge">4</span>
+          </div>
+          <div id="kanban-active"></div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem">
+            <span style="width:10px;height:10px;border-radius:50%;background:#A76BFF"></span> Completed <span class="nav-badge">2</span>
+          </div>
+          <div id="kanban-completed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY PROJECTS -->
+    <div class="tab-panel" id="tabMyProjects">
+      <div id="myProjectCards" class="stagger" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- PROJECT DETAIL MODAL -->
+<div class="modal-overlay" id="projectDetailModal">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-header">
+      <h3 class="modal-title" id="detailTitle">Project Details</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('projectDetailModal')">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('projectDetailModal')">Close</button>
+      <button class="btn btn-primary" onclick="IPR_APP.toast('Project updated!','success');IPR_APP.closeModal('projectDetailModal')">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW PROJECT MODAL -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">New Research Project</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('projectModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Project Title *</label>
+        <input type="text" id="pt" class="form-control" placeholder="e.g. AI-Based Diagnostics System" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Domain *</label>
+          <select id="pd" class="form-control">
+            <option>Biotechnology</option><option>AI/ML</option><option>Nanotechnology</option>
+            <option>Renewable Energy</option><option>Robotics</option><option>Cryptography</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Funding (₹ Lakh)</label>
+          <input type="number" id="pf" class="form-control" placeholder="50" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="pdesc" class="form-control" rows="3" placeholder="Research objectives and methodology..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input type="date" id="pstart" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input type="date" id="pend" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Team Members</label>
+        <input type="text" id="pteam" class="form-control" placeholder="email1@iit.ac.in, email2@iit.ac.in" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Documents</label>
+        <div class="file-drop" onclick="document.getElementById('projFile').click()">
+          <div class="file-drop-icon">📎</div>
+          <p>Drop files here or <span>click to browse</span></p>
+          <p class="text-xs text-slate" style="margin-top:0.3rem">PDF, DOCX, XLSX — Max 10MB</p>
+          <input type="file" id="projFile" accept=".pdf,.docx,.xlsx" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('projectModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">✅ Create Project</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+const PROJECTS = [
+  { id:1, title:'AI-Based Drug Discovery System', researcher:'Dr. Priya Sharma', domain:'AI/ML', team:4, start:'2025-01-15', progress:72, iprStatus:'Under Review', status:'Active', desc:'Using transformer models to predict drug-protein interactions for rare diseases.', funding:'₹5Cr', raised:'₹3.2Cr' },
+  { id:2, title:'Quantum Encryption Protocol', researcher:'Dr. Aman Verma', domain:'Cryptography', team:3, start:'2025-02-20', progress:45, iprStatus:'Filed', status:'Under Review', desc:'Post-quantum cryptography implementation for government communications.', funding:'₹3.5Cr', raised:'₹0.7Cr' },
+  { id:3, title:'BioSensor for Glucose Monitoring', researcher:'Dr. Neha Roy', domain:'Biotechnology', team:5, start:'2025-03-01', progress:88, iprStatus:'Approved', status:'Active', desc:'Non-invasive glucose monitoring using nanomaterial-based biosensors.', funding:'₹2Cr', raised:'₹1.8Cr' },
+  { id:4, title:'Solar Cell Efficiency Research', researcher:'Prof. Suresh Iyer', domain:'Renewable Energy', team:2, start:'2025-03-10', progress:30, iprStatus:'Pending', status:'Pending', desc:'Perovskite-silicon tandem solar cell for >30% efficiency targets.', funding:'₹1.5Cr', raised:'₹0.4Cr' },
+  { id:5, title:'Nano-Robot Drug Delivery', researcher:'Dr. Kavita Singh', domain:'Nanotechnology', team:6, start:'2024-11-01', progress:95, iprStatus:'Approved', status:'Completed', desc:'Targeted cancer therapy using magnetically guided nanorobots.', funding:'₹4Cr', raised:'₹4Cr' },
+  { id:6, title:'Smart Agriculture IoT Platform', researcher:'Prof. Raj Kumar', domain:'AI/ML', team:3, start:'2025-04-01', progress:15, iprStatus:'Pending', status:'Pending', desc:'Precision farming using satellite imagery and soil sensors.', funding:'₹0.8Cr', raised:'₹0Cr' },
+];
+
+let filtered = [...PROJECTS];
+let viewMode = 'table';
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pageTitle').textContent = 'Projects';
+  renderTable(PROJECTS);
+  renderKanban(PROJECTS);
+  renderMyProjects(PROJECTS.slice(0,3));
+});
+
+function renderTable(data) {
+  document.getElementById('projectsTable').innerHTML = data.map(p => `
+    <tr>
+      <td>
+        <strong>${p.title}</strong>
+        <div class="text-xs text-slate" style="margin-top:2px">${p.domain}</div>
+      </td>
+      <td>${p.researcher}</td>
+      <td><span class="badge badge-review">${p.domain}</span></td>
+      <td>
+        <div style="display:flex">
+          ${[...Array(Math.min(p.team,4))].map((_, i) => `<div style="width:26px;height:26px;border-radius:50%;background:hsl(${i*60},60%,50%);margin-left:${i>0?'-6px':'0'};border:2px solid var(--navy-mid);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:white;z-index:${4-i}">${p.team > 4 && i === 3 ? '+' + (p.team-3) : '👤'}</div>`).join('')}
+        </div>
+      </td>
+      <td>${IPR_APP.formatDate(p.start)}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+          <span class="text-xs text-slate">${p.progress}%</span>
+        </div>
+      </td>
+      <td>${IPR_APP.statusBadge(p.iprStatus)}</td>
+      <td>${IPR_APP.statusBadge(p.status)}</td>
+      <td>
+        <div style="display:flex;gap:0.35rem">
+          <button class="btn btn-outline btn-sm" onclick="openDetail(${p.id})" title="View">👁️</button>
+          <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('Edit mode','info')" title="Edit">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="IPR_APP.toast('Project archived','warning')" title="Archive">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--slate)">No projects found</td></tr>';
+}
+
+function renderKanban(data) {
+  const cols = { 'Pending': 'kanban-pending', 'Under Review': 'kanban-review', 'Active': 'kanban-active', 'Completed': 'kanban-completed' };
+  Object.values(cols).forEach(id => document.getElementById(id).innerHTML = '');
+  data.forEach(p => {
+    const col = cols[p.status];
+    if (!col) return;
+    const card = document.createElement('div');
+    card.className = 'card mb-2';
+    card.style.cursor = 'pointer';
+    card.innerHTML = `
+      <div class="flex-between mb-1">
+        <span class="badge badge-review" style="font-size:0.65rem">${p.domain}</span>
+        ${IPR_APP.statusBadge(p.iprStatus)}
+      </div>
+      <div style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem">${p.title}</div>
+      <div class="text-xs text-slate mb-1">${p.researcher} · ${p.team} members</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+      <div class="text-xs text-slate" style="margin-top:0.3rem">${p.progress}% complete</div>
+    `;
+    card.onclick = () => openDetail(p.id);
+    document.getElementById(col).appendChild(card);
+  });
+}
+
+function renderMyProjects(data) {
+  document.getElementById('myProjectCards').innerHTML = data.map(p => `
+    <div class="card" style="cursor:pointer" onclick="openDetail(${p.id})">
+      <div class="flex-between mb-2">
+        <span class="badge badge-review">${p.domain}</span>
+        ${IPR_APP.statusBadge(p.status)}
+      </div>
+      <h3 style="font-size:1rem;margin-bottom:0.5rem">${p.title}</h3>
+      <p style="font-size:0.8rem;margin-bottom:1rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.desc}</p>
+      <div class="flex-between text-xs text-slate mb-1">
+        <span>Funding: ${p.funding}</span><span>Raised: ${p.raised}</span>
+      </div>
+      <div class="progress-bar mb-1"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+      <div class="flex-between">
+        <span class="text-xs text-slate">${p.progress}% complete</span>
+        <span class="text-xs text-slate">${p.team} team members</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openDetail(id) {
+  const p = PROJECTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('detailTitle').textContent = p.title;
+  document.getElementById('detailBody').innerHTML = `
+    <div class="flex-between mb-3">
+      ${IPR_APP.statusBadge(p.status)}
+      <span class="text-sm text-slate">Started ${IPR_APP.formatDate(p.start)}</span>
+    </div>
+    <p style="margin-bottom:1.5rem">${p.desc}</p>
+    <div class="grid-2 mb-3">
+      <div class="card" style="padding:1rem">
+        <div class="text-xs text-slate mb-1">Researcher</div>
+        <div class="fw-600">${p.researcher}</div>
+      </div>
+      <div class="card" style="padding:1rem">
+        <div class="text-xs text-slate mb-1">Domain</div>
+        <div class="fw-600">${p.domain}</div>
+      </div>
+      <div class="card" style="padding:1rem">
+        <div class="text-xs text-slate mb-1">Funding Goal</div>
+        <div class="fw-600 text-gold">${p.funding}</div>
+      </div>
+      <div class="card" style="padding:1rem">
+        <div class="text-xs text-slate mb-1">Amount Raised</div>
+        <div class="fw-600 text-teal">${p.raised}</div>
+      </div>
+    </div>
+    <div class="mb-2">
+      <div class="flex-between text-sm mb-1"><span>Project Progress</span><span class="text-teal fw-600">${p.progress}%</span></div>
+      <div class="progress-bar" style="height:10px"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex-between">
+      <div><span class="text-xs text-slate">IPR Status: </span>${IPR_APP.statusBadge(p.iprStatus)}</div>
+      <button class="btn btn-outline btn-sm" onclick="window.location.href='ipr.html'">⚖️ View IPR</button>
+    </div>
+  `;
+  IPR_APP.openModal('projectDetailModal');
+}
+
+function filterProjects() {
+  const search = document.getElementById('searchProjects').value.toLowerCase();
+  const status = document.getElementById('filterStatus').value;
+  const domain = document.getElementById('filterDomain').value;
+  filtered = PROJECTS.filter(p => {
+    const matchSearch = !search || p.title.toLowerCase().includes(search) || p.researcher.toLowerCase().includes(search) || p.domain.toLowerCase().includes(search);
+    const matchStatus = !status || p.status === status;
+    const matchDomain = !domain || p.domain === domain;
+    return matchSearch && matchStatus && matchDomain;
+  });
+  renderTable(filtered);
+  renderKanban(filtered);
+}
+
+function resetFilters() {
+  document.getElementById('searchProjects').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterDomain').value = '';
+  filterProjects();
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const map = { list: 'tabList', kanban: 'tabKanban', myProjects: 'tabMyProjects' };
+  document.getElementById(map[name]).classList.add('active');
+}
+
+function saveProject() {
+  const title = document.getElementById('pt').value.trim();
+  if (!title) { IPR_APP.toast('Title is required', 'error'); return; }
+  IPR_APP.closeModal('projectModal');
+  IPR_APP.toast('Project "' + title + '" created!', 'success');
+}
+</script>
+</body>
+</html>

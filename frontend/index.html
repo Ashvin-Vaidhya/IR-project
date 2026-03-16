@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPR Platform — Centralized Research & IP Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/home.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">⚖️</div>
+    <span>IPR <span style="color:var(--teal)">Platform</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" style="color:var(--teal)">Home</a>
+    <a href="pages/about.html">About</a>
+    <a href="pages/contact.html">Contact</a>
+  </div>
+  <div class="nav-cta">
+    <a href="pages/auth.html" class="btn-nav btn-nav-outline">Sign In</a>
+    <a href="pages/auth.html" class="btn-nav btn-nav-primary">Get Started →</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>🚀</span> Platform v2.0 — Launching Across India
+    </div>
+    <h1>
+      Centralized <span class="accent">IPR</span> &<br>
+      <span class="accent-gold">Project Management</span> Platform
+    </h1>
+    <p>
+      A unified ecosystem connecting researchers, investors, and IPR professionals — 
+      to protect inventions, track progress, and unlock funding.
+    </p>
+    <div class="hero-actions">
+      <a href="pages/auth.html" class="btn-hero-primary">
+        <span>🔬</span> Start for Free
+      </a>
+      <a href="pages/about.html" class="btn-hero-outline">
+        <span>▶</span> Learn More
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num" id="hc1">0</div>
+        <div class="lbl">Projects Managed</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,0.1);height:40px;align-self:center"></div>
+      <div class="hero-stat">
+        <div class="num" id="hc2">0</div>
+        <div class="lbl">IPR Filings</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,0.1);height:40px;align-self:center"></div>
+      <div class="hero-stat">
+        <div class="num" id="hc3">0</div>
+        <div class="lbl">Active Investors</div>
+      </div>
+      <div style="width:1px;background:rgba(255,255,255,0.1);height:40px;align-self:center"></div>
+      <div class="hero-stat">
+        <div class="num" id="hc4">0%</div>
+        <div class="lbl">Approval Rate</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section>
+  <div style="text-align:center;max-width:600px;margin:0 auto 3rem">
+    <div class="section-label">Core Features</div>
+    <h2 class="section-title">Everything You Need to Manage Research IP</h2>
+    <p class="section-sub" style="margin:0 auto">From first draft to final patent approval — all in one intelligent, secure platform.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon fi-teal">🔬</div>
+      <h3>Project Management</h3>
+      <p>Create and track research projects with milestones, team assignments, document uploads, and progress dashboards.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-gold">⚖️</div>
+      <h3>IPR Filing & Tracking</h3>
+      <p>File patents, copyrights, and trademarks. Track every step from submission to final approval with full audit trails.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-rose">💰</div>
+      <h3>Investor Portal</h3>
+      <p>Browse curated research opportunities, submit investment proposals, and monitor portfolio performance in real time.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-blue">📊</div>
+      <h3>Analytics Dashboard</h3>
+      <p>Visual charts covering IPR status distributions, project timelines, funding progress, and team productivity.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-purple">🔔</div>
+      <h3>Smart Notifications</h3>
+      <p>Automated alerts for IPR deadlines, status changes, investor interest, and project review outcomes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-green">🛡️</div>
+      <h3>Role-Based Access</h3>
+      <p>Granular permissions for Researchers, Investors, IPR Professionals, and Admins — data stays where it belongs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section class="roles-section">
+  <div style="text-align:center;max-width:560px;margin:0 auto 2.5rem">
+    <div class="section-label">Who It's For</div>
+    <h2 class="section-title">Built for Every Stakeholder</h2>
+  </div>
+  <div class="roles-grid">
+    <a href="pages/auth.html" class="role-card">
+      <div class="role-icon" style="background:rgba(0,201,167,0.1)">🔬</div>
+      <h3>Researchers</h3>
+      <p>Create projects, file IPR, track progress, and collaborate with your team from a single dashboard.</p>
+    </a>
+    <a href="pages/auth.html" class="role-card">
+      <div class="role-icon" style="background:rgba(245,166,35,0.1)">💼</div>
+      <h3>Investors</h3>
+      <p>Discover verified research opportunities, track investments, and receive real-time progress updates.</p>
+    </a>
+    <a href="pages/auth.html" class="role-card">
+      <div class="role-icon" style="background:rgba(167,107,255,0.1)">⚖️</div>
+      <h3>IPR Professionals</h3>
+      <p>Manage client portfolios, file applications, set deadline reminders, and communicate status updates.</p>
+    </a>
+    <a href="pages/auth.html" class="role-card">
+      <div class="role-icon" style="background:rgba(255,107,138,0.1)">🛠️</div>
+      <h3>Administrators</h3>
+      <p>Oversee all users, approve projects, monitor platform metrics, and manage access controls.</p>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div style="text-align:center;max-width:560px;margin:0 auto 3rem">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Research to Recognition</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Register & Set Up</h3>
+      <p>Create your account, choose your role, and set up your institution profile.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Create Projects</h3>
+      <p>Add research projects, upload documentation, and assign your team members.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>File & Track IPR</h3>
+      <p>Submit patent or copyright applications and track their real-time status.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Connect & Fund</h3>
+      <p>Get matched with investors and receive funding for your research goals.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <div class="section-label">Get Started Today</div>
+    <h2 class="section-title" style="font-family:var(--font-display)">Ready to Protect Your Research?</h2>
+    <p style="color:var(--slate-light)">Join hundreds of researchers and institutions already managing their IP with our platform.</p>
+    <div class="cta-btns">
+      <a href="pages/auth.html" class="btn-hero-primary">🚀 Create Free Account</a>
+      <a href="pages/contact.html" class="btn-hero-outline">📧 Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:1.05rem">
+        <div class="logo-icon">⚖️</div>
+        <span>IPR <span style="color:var(--teal)">Platform</span></span>
+      </div>
+      <p>India's centralized platform for research project management and intellectual property rights — built for institutions, startups, and innovators.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="pages/dashboard.html">Dashboard</a>
+      <a href="pages/projects.html">Projects</a>
+      <a href="pages/ipr.html">IPR Status</a>
+      <a href="pages/investor.html">Investor Hub</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="pages/about.html">About</a>
+      <a href="pages/contact.html">Contact</a>
+      <a href="#">API Docs</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Roles</h4>
+      <a href="pages/auth.html">Researcher Login</a>
+      <a href="pages/auth.html">Investor Login</a>
+      <a href="pages/auth.html">IPR Professional</a>
+      <a href="pages/auth.html">Admin Access</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 IPR Platform. Built for India's Research Ecosystem.</span>
+    <span>Made with ❤️ in Nagpur, Maharashtra</span>
+  </div>
+</footer>
+
+<script>
+// Counter animations
+function animateCounter(id, target, suffix = '') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let n = 0;
+  const inc = target / 70;
+  const t = setInterval(() => {
+    n = Math.min(n + inc, target);
+    el.textContent = Math.round(n).toLocaleString() + suffix;
+    if (n >= target) clearInterval(t);
+  }, 18);
+}
+
+window.addEventListener('load', () => {
+  animateCounter('hc1', 1247);
+  animateCounter('hc2', 3421);
+  animateCounter('hc3', 584);
+  animateCounter('hc4', 92, '%');
+});
+
+// Hamburger
+document.getElementById('hamburger')?.addEventListener('click', () => {
+  document.querySelector('.nav-links').style.display =
+    document.querySelector('.nav-links').style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Intersection observer for cards
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.feature-card, .role-card, .step').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

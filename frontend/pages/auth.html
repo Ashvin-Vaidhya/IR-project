@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Register — IPR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+<body>
+<div class="auth-split">
+
+  <!-- LEFT -->
+  <div class="auth-left">
+    <div class="auth-left-bg"></div>
+    <div class="auth-left-grid"></div>
+    <div class="auth-left-content">
+      <a href="../index.html" class="auth-logo">
+        <div class="logo-icon">⚖️</div>
+        <div class="logo-text">IPR <span>Platform</span></div>
+      </a>
+
+      <h1 class="auth-headline">
+        Centralized <span class="accent">IP Protection</span><br/>
+        &amp; <span class="accent-gold">Research Management</span>
+      </h1>
+      <p class="auth-sub">
+        Join thousands of researchers, investors, and IP professionals managing their intellectual property on one secure platform.
+      </p>
+
+      <div class="auth-features">
+        <div class="auth-feature">
+          <div class="auth-feature-icon teal">🛡️</div>
+          <div>
+            <h4>Secure IP Filing</h4>
+            <p>File patents, copyrights & trademarks with full encryption</p>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon gold">📊</div>
+          <div>
+            <h4>Real-time Tracking</h4>
+            <p>Monitor project progress and IPR status in real time</p>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon rose">💼</div>
+          <div>
+            <h4>Investor Connect</h4>
+            <p>Connect research projects with qualified investors</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="auth-right">
+
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div class="panel-tab active" id="panelLogin">
+      <h2 class="auth-card-title">Welcome Back</h2>
+      <p class="auth-card-sub">
+        Don't have an account? <a href="#" onclick="switchTab('register')">Register here</a>
+      </p>
+
+      <div class="form-error-msg" id="loginError"></div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+          <input type="email" id="loginEmail" class="form-control" placeholder="you@institution.ac.in" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" />
+        </div>
+      </div>
+
+      <a href="#" class="forgot-link">Forgot password?</a>
+
+      <button class="btn-auth" id="loginBtn" onclick="doLogin()">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+      </button>
+
+      <div class="divider-or">or continue with</div>
+      <div class="social-btns">
+        <button class="btn-social" onclick="quickDemo('Researcher')">🔬 Demo Researcher</button>
+        <button class="btn-social" onclick="quickDemo('Investor')">💰 Demo Investor</button>
+        <button class="btn-social" onclick="quickDemo('Admin')">🛠️ Demo Admin</button>
+      </div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="panel-tab" id="panelRegister">
+      <h2 class="auth-card-title">Create Account</h2>
+      <p class="auth-card-sub">
+        Already registered? <a href="#" onclick="switchTab('login')">Sign in</a>
+      </p>
+
+      <div class="form-error-msg" id="regError"></div>
+      <div class="form-success-msg" id="regSuccess"></div>
+
+      <div class="form-group">
+        <label class="form-label">Select Your Role</label>
+        <div class="role-select-grid">
+          <div>
+            <input type="radio" name="role" value="Researcher" id="roleR" class="role-option" checked />
+            <label for="roleR" class="role-label">
+              <span class="r-icon">🔬</span>
+              <span class="r-name">Researcher</span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" name="role" value="Investor" id="roleI" class="role-option" />
+            <label for="roleI" class="role-label">
+              <span class="r-icon">💰</span>
+              <span class="r-name">Investor</span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" name="role" value="IPR Professional" id="roleP" class="role-option" />
+            <label for="roleP" class="role-label">
+              <span class="r-icon">⚖️</span>
+              <span class="r-name">IPR Professional</span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" name="role" value="Admin" id="roleA" class="role-option" />
+            <label for="roleA" class="role-label">
+              <span class="r-icon">🛠️</span>
+              <span class="r-name">Admin</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" id="regFirst" class="form-control" placeholder="Priya" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" id="regLast" class="form-control" placeholder="Sharma" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+          <input type="email" id="regEmail" class="form-control" placeholder="you@institution.ac.in" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Institution / Organization</label>
+        <input type="text" id="regOrg" class="form-control" placeholder="IIT Bombay / Tata Consultancy" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="regPass" class="form-control" placeholder="Min 8 chars" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" id="regPassConf" class="form-control" placeholder="••••••••" />
+        </div>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" id="terms" />
+        <label for="terms">
+          I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </label>
+      </div>
+
+      <button class="btn-auth" onclick="doRegister()">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Check URL params
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'register') switchTab('register');
+
+  function switchTab(tab) {
+    document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+    document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
+  }
+
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg; el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), 4000);
+  }
+
+  function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+    if (!email || !pass) { showError('loginError', 'Please fill in all fields.'); return; }
+
+    const btn = document.getElementById('loginBtn');
+    btn.innerHTML = '<span class="spinner"></span> Signing in...';
+    btn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+      // Demo login
+      const demoUsers = {
+        'researcher@ipr.in': { name: 'Dr. Priya Sharma', role: 'Researcher', avatar: 'PS' },
+        'investor@ipr.in': { name: 'Mr. Rahul Mehta', role: 'Investor', avatar: 'RM' },
+        'admin@ipr.in': { name: 'Admin User', role: 'Admin', avatar: 'AU' },
+        'ipr@ipr.in': { name: 'Adv. Nisha Patel', role: 'IPR Professional', avatar: 'NP' },
+      };
+
+      const user = demoUsers[email.toLowerCase()] || { name: email.split('@')[0], role: 'Researcher', avatar: email.substring(0,2).toUpperCase() };
+      user.email = email; user.id = Date.now();
+      localStorage.setItem('ipr_user', JSON.stringify(user));
+      localStorage.setItem('ipr_token', 'demo_token_' + Date.now());
+      window.location.href = 'dashboard.html';
+    }, 1200);
+  }
+
+  function quickDemo(role) {
+    const demos = {
+      'Researcher': { name: 'Dr. Priya Sharma', email: 'researcher@ipr.in', role: 'Researcher', avatar: 'PS' },
+      'Investor': { name: 'Mr. Rahul Mehta', email: 'investor@ipr.in', role: 'Investor', avatar: 'RM' },
+      'Admin': { name: 'Admin User', email: 'admin@ipr.in', role: 'Admin', avatar: 'AU' },
+    };
+    const user = { ...demos[role], id: Date.now() };
+    localStorage.setItem('ipr_user', JSON.stringify(user));
+    localStorage.setItem('ipr_token', 'demo_' + role.toLowerCase());
+    window.location.href = 'dashboard.html';
+  }
+
+  function doRegister() {
+    const first = document.getElementById('regFirst').value.trim();
+    const last = document.getElementById('regLast').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const org = document.getElementById('regOrg').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const passConf = document.getElementById('regPassConf').value;
+    const terms = document.getElementById('terms').checked;
+    const role = document.querySelector('input[name="role"]:checked')?.value;
+
+    if (!first || !last || !email || !org || !pass) { showError('regError', 'Please fill in all required fields.'); return; }
+    if (pass !== passConf) { showError('regError', 'Passwords do not match.'); return; }
+    if (pass.length < 8) { showError('regError', 'Password must be at least 8 characters.'); return; }
+    if (!terms) { showError('regError', 'Please agree to the Terms of Service.'); return; }
+
+    const user = {
+      id: Date.now(),
+      name: `${first} ${last}`,
+      email, org, role,
+      avatar: (first[0] + last[0]).toUpperCase()
+    };
+
+    localStorage.setItem('ipr_user', JSON.stringify(user));
+    localStorage.setItem('ipr_token', 'token_' + Date.now());
+
+    const suc = document.getElementById('regSuccess');
+    suc.textContent = 'Account created! Redirecting to dashboard...';
+    suc.classList.add('visible');
+    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+  }
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('panelLogin').classList.contains('active')) doLogin();
+      else doRegister();
+    }
+  });
+</script>
+</body>
+</html>

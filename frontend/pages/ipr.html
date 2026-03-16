@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPR Status — IPR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+<div class="app-layout">
+  <main class="main-content" id="mainContent">
+
+    <div class="page-header stagger">
+      <div class="page-header-left">
+        <h1>IPR Management</h1>
+        <p>Track, manage and file all your intellectual property rights — patents, copyrights, and trademarks.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="exportIPR()">📥 Export</button>
+        <button class="btn btn-primary" onclick="IPR_APP.openModal('newIPRModal')">➕ File New IPR</button>
+      </div>
+    </div>
+
+    <!-- IPR STATS -->
+    <div class="stat-grid stagger">
+      <div class="stat-card teal"><div class="stat-icon">📄</div><div class="stat-value">42</div><div class="stat-label">Total Filings</div></div>
+      <div class="stat-card gold"><div class="stat-icon">⏳</div><div class="stat-value">8</div><div class="stat-label">Under Review</div></div>
+      <div class="stat-card blue"><div class="stat-icon">📨</div><div class="stat-value">12</div><div class="stat-label">Filed</div></div>
+      <div class="stat-card rose"><div class="stat-icon">🏆</div><div class="stat-value">18</div><div class="stat-label">Approved</div></div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="grid-2 mb-3 stagger">
+      <div class="card">
+        <h3 class="mb-2">IPR Type Distribution</h3>
+        <div class="chart-container"><canvas id="iprTypeChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 class="mb-2">Monthly Filing Trend</h3>
+        <div class="chart-container"><canvas id="iprTrendChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="card mb-3">
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+        <input type="text" id="searchIPR" class="form-control" style="flex:1;min-width:200px" placeholder="🔍 Search by title, type, applicant..." oninput="filterIPR()" />
+        <select class="form-control" style="width:auto" id="filterType" onchange="filterIPR()">
+          <option value="">All Types</option><option>Patent</option><option>Copyright</option><option>Trademark</option><option>Trade Secret</option>
+        </select>
+        <select class="form-control" style="width:auto" id="filterIPRStatus" onchange="filterIPR()">
+          <option value="">All Statuses</option><option>Filed</option><option>Under Review</option><option>Approved</option><option>Rejected</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- IPR TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>IPR Title</th>
+            <th>Type</th>
+            <th>Applicant</th>
+            <th>Project</th>
+            <th>Application No.</th>
+            <th>Filed Date</th>
+            <th>Status</th>
+            <th>Documents</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="iprTable"></tbody>
+      </table>
+    </div>
+
+    <!-- TIMELINE SECTION -->
+    <div class="card mt-2">
+      <h3 class="mb-2">IPR Filing Timeline</h3>
+      <div id="iprTimeline"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- NEW IPR MODAL -->
+<div class="modal-overlay" id="newIPRModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <h3 class="modal-title">File New IPR</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('newIPRModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">IPR Type *</label>
+          <select id="iprType" class="form-control">
+            <option value="">Select type</option>
+            <option>Patent</option><option>Copyright</option><option>Trademark</option><option>Trade Secret</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Associated Project *</label>
+          <select id="iprProject" class="form-control">
+            <option value="">Select project</option>
+            <option>AI-Based Drug Discovery System</option>
+            <option>Quantum Encryption Protocol</option>
+            <option>BioSensor for Glucose Monitoring</option>
+            <option>Solar Cell Efficiency Research</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title / Name of Invention *</label>
+        <input type="text" id="iprTitle" class="form-control" placeholder="e.g. Method for AI-Assisted Drug Candidate Screening" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Inventors / Authors *</label>
+        <input type="text" id="iprInventors" class="form-control" placeholder="Dr. Priya Sharma, Dr. Aman Verma" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Abstract / Description</label>
+        <textarea id="iprAbstract" class="form-control" rows="4" placeholder="Detailed description of the invention, its novelty, and utility..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Filing Date</label>
+          <input type="date" id="iprFilingDate" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority Country</label>
+          <select id="iprCountry" class="form-control">
+            <option>India</option><option>USA</option><option>EU</option><option>PCT (International)</option><option>UK</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Documents</label>
+        <div class="file-drop" onclick="document.getElementById('iprFile').click()">
+          <div class="file-drop-icon">📎</div>
+          <p>Upload patent application, drawings, or supporting documents</p>
+          <p style="font-size:0.75rem;color:var(--slate);margin-top:0.3rem">PDF, DOCX — Max 20MB</p>
+          <input type="file" id="iprFile" accept=".pdf,.docx" multiple />
+        </div>
+        <div id="fileList" style="margin-top:0.5rem"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">IPR Consultant / Attorney</label>
+        <input type="text" id="iprAttorney" class="form-control" placeholder="Adv. Nisha Patel (optional)" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('newIPRModal')">Cancel</button>
+      <button class="btn btn-outline" onclick="IPR_APP.toast('Saved as draft','info')">💾 Save Draft</button>
+      <button class="btn btn-primary" onclick="submitIPR()">📤 Submit Filing</button>
+    </div>
+  </div>
+</div>
+
+<!-- IPR DETAIL MODAL -->
+<div class="modal-overlay" id="iprDetailModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <h3 class="modal-title" id="iprDetailTitle">IPR Details</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('iprDetailModal')">✕</button>
+    </div>
+    <div class="modal-body" id="iprDetailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('iprDetailModal')">Close</button>
+      <button class="btn btn-outline" onclick="IPR_APP.toast('Document downloaded','info')">📥 Download Docs</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="../js/app.js"></script>
+<script>
+const IPR_DATA = [
+  { id:1, title:'AI-Assisted Drug Candidate Screening Method', type:'Patent', applicant:'Dr. Priya Sharma', project:'AI Drug Discovery', appNo:'IN202511001234', filed:'2025-01-20', status:'Under Review', docs:3, country:'India', abstract:'A method using transformer neural networks to predict binding affinity of drug candidates to target proteins, significantly reducing early-stage drug discovery time.' },
+  { id:2, title:'Non-Invasive Glucose Biosensor Device', type:'Patent', applicant:'Dr. Neha Roy', project:'BioSensor Project', appNo:'IN202510005678', filed:'2025-03-05', status:'Filed', docs:5, country:'PCT', abstract:'A wearable biosensor device using graphene nanocomposites for continuous, non-invasive blood glucose monitoring with ±5% accuracy.' },
+  { id:3, title:'Quantum Key Distribution Algorithm', type:'Copyright', applicant:'Dr. Aman Verma', project:'Quantum Encryption', appNo:'CR202500456', filed:'2024-12-15', status:'Approved', docs:2, country:'India', abstract:'Software implementation of BB84 quantum key distribution protocol with enhanced error correction for satellite communications.' },
+  { id:4, title:'BioSense™ Brand Identity', type:'Trademark', applicant:'Dr. Neha Roy', project:'BioSensor Project', appNo:'TM202511789', filed:'2025-02-28', status:'Approved', docs:4, country:'India', abstract:'Logo, brand name, and associated marketing materials for the BioSense medical device product line.' },
+  { id:5, title:'Perovskite Solar Cell Fabrication Process', type:'Patent', applicant:'Prof. Suresh Iyer', project:'Solar Research', appNo:'IN202512003456', filed:'2025-03-15', status:'Filed', docs:6, country:'India', abstract:'Novel low-temperature deposition method for perovskite-silicon tandem solar cells achieving >30% power conversion efficiency.' },
+  { id:6, title:'Nanorobot Navigation Control System', type:'Patent', applicant:'Dr. Kavita Singh', project:'Nano-Robot Delivery', appNo:'IN202410002789', filed:'2024-10-10', status:'Approved', docs:8, country:'PCT', abstract:'Magnetic field-based control system for targeted drug delivery using magnetically responsive nanorobots in biological environments.' },
+  { id:7, title:'Smart Irrigation Algorithm', type:'Copyright', applicant:'Prof. Raj Kumar', project:'Smart Agriculture', appNo:'CR202600001', filed:'2025-04-05', status:'Filed', docs:1, country:'India', abstract:'Machine learning algorithm for predicting optimal irrigation schedules using soil moisture, weather, and satellite crop data.' },
+  { id:8, title:'Encryption Protocol v3.0', type:'Trade Secret', applicant:'Dr. Aman Verma', project:'Quantum Encryption', appNo:'TS202500089', filed:'2025-01-10', status:'Rejected', docs:2, country:'India', abstract:'Hybrid classical-quantum encryption protocol for securing data in transit over public networks.' },
+];
+
+let filteredIPR = [...IPR_DATA];
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pageTitle').textContent = 'IPR Status';
+  renderIPRTable(IPR_DATA);
+  renderTimeline();
+
+  IPR_APP.renderDonut('iprTypeChart',
+    [5, 2, 1, 0],
+    ['Patent', 'Copyright', 'Trademark', 'Trade Secret'],
+    ['#00C9A7', '#4A9EFF', '#F5A623', '#FF6B8A']
+  );
+
+  IPR_APP.renderBar('iprTrendChart',
+    ['Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
+    [
+      { label: 'Filed', data: [2,3,4,3,5,4,2], backgroundColor: 'rgba(0,201,167,0.6)', borderRadius: 6 },
+      { label: 'Approved', data: [1,2,2,3,3,4,1], backgroundColor: 'rgba(245,166,35,0.6)', borderRadius: 6 },
+    ]
+  );
+
+  // File drag-drop
+  const drop = document.querySelector('.file-drop');
+  drop?.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop?.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop?.addEventListener('drop', e => {
+    e.preventDefault(); drop.classList.remove('drag-over');
+    showFiles(e.dataTransfer.files);
+  });
+  document.getElementById('iprFile')?.addEventListener('change', e => showFiles(e.target.files));
+});
+
+function showFiles(files) {
+  const list = document.getElementById('fileList');
+  list.innerHTML = [...files].map(f => `
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.75rem;background:rgba(0,201,167,0.05);border:1px solid rgba(0,201,167,0.15);border-radius:6px;margin-bottom:0.35rem;font-size:0.8rem">
+      📎 ${f.name} <span style="color:var(--slate)">(${(f.size/1024).toFixed(0)} KB)</span>
+      <span style="margin-left:auto;cursor:pointer;color:var(--rose)" onclick="this.parentElement.remove()">✕</span>
+    </div>
+  `).join('');
+}
+
+function renderIPRTable(data) {
+  const typeColors = { Patent: 'badge-teal', Copyright: 'badge-review', Trademark: 'badge-gold', 'Trade Secret': 'badge-filed' };
+  document.getElementById('iprTable').innerHTML = data.map(i => `
+    <tr>
+      <td>
+        <strong>${i.title}</strong>
+        <div class="text-xs text-slate">${i.country}</div>
+      </td>
+      <td><span class="badge ${typeColors[i.type] || 'badge-pending'}">${i.type}</span></td>
+      <td>${i.applicant}</td>
+      <td style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.project}</td>
+      <td><code style="font-size:0.75rem;color:var(--teal)">${i.appNo}</code></td>
+      <td>${IPR_APP.formatDate(i.filed)}</td>
+      <td>${IPR_APP.statusBadge(i.status)}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('${i.docs} documents available','info')">📎 ${i.docs} files</button>
+      </td>
+      <td>
+        <div style="display:flex;gap:0.35rem">
+          <button class="btn btn-outline btn-sm" onclick="openIPRDetail(${i.id})" title="View">👁️</button>
+          <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('Downloading certificate...','info')" title="Download">📥</button>
+        </div>
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--slate)">No IPR filings found</td></tr>';
+}
+
+function renderTimeline() {
+  const items = [
+    { date:'Apr 2025', event:'Smart Irrigation Algorithm — Filed', type:'Filed', color:'var(--teal)' },
+    { date:'Mar 2025', event:'Perovskite Solar Cell Patent — Filed', type:'Filed', color:'var(--teal)' },
+    { date:'Mar 2025', event:'BioSense Trademark — Approved ✅', type:'Approved', color:'var(--gold)' },
+    { date:'Feb 2025', event:'Quantum Encryption — Under Review', type:'Under Review', color:'#4A9EFF' },
+    { date:'Jan 2025', event:'AI Drug Discovery Patent — Submitted', type:'Filed', color:'var(--teal)' },
+    { date:'Dec 2024', event:'Quantum Key Distribution — Approved ✅', type:'Approved', color:'var(--gold)' },
+  ];
+
+  document.getElementById('iprTimeline').innerHTML = `
+    <div style="position:relative;padding-left:2rem">
+      <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--teal),var(--gold),var(--rose));border-radius:2px;opacity:0.3"></div>
+      ${items.map(item => `
+        <div style="position:relative;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:1rem">
+          <div style="position:absolute;left:-1.55rem;width:14px;height:14px;border-radius:50%;background:${item.color};border:2px solid var(--navy-mid);flex-shrink:0;margin-top:3px"></div>
+          <div style="flex:1;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px">
+            <div style="font-size:0.7rem;color:var(--slate);margin-bottom:0.2rem">${item.date}</div>
+            <div style="font-size:0.875rem;font-weight:600">${item.event}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openIPRDetail(id) {
+  const ipr = IPR_DATA.find(x => x.id === id);
+  if (!ipr) return;
+  document.getElementById('iprDetailTitle').textContent = ipr.title;
+  document.getElementById('iprDetailBody').innerHTML = `
+    <div class="flex-between mb-3">
+      <span class="badge badge-review">${ipr.type}</span>
+      ${IPR_APP.statusBadge(ipr.status)}
+    </div>
+    <div class="grid-2 mb-3">
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Application No.</div><code style="color:var(--teal)">${ipr.appNo}</code></div>
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Filed Date</div><div class="fw-600">${IPR_APP.formatDate(ipr.filed)}</div></div>
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Applicant</div><div class="fw-600">${ipr.applicant}</div></div>
+      <div class="card" style="padding:0.9rem"><div class="text-xs text-slate mb-1">Country</div><div class="fw-600">${ipr.country}</div></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Abstract</div>
+      <p style="padding:1rem;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.06);font-size:0.875rem;line-height:1.7">${ipr.abstract}</p>
+    </div>
+    <div class="flex-between">
+      <span class="text-sm text-slate">📎 ${ipr.docs} documents attached</span>
+      <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('All documents downloaded','info')">📥 Download All</button>
+    </div>
+    ${ipr.status === 'Rejected' ? `<div style="margin-top:1rem;padding:0.9rem;background:rgba(255,107,138,0.08);border:1px solid rgba(255,107,138,0.2);border-radius:8px;font-size:0.875rem;color:var(--rose)">⚠️ Filing rejected. Please review the comments from the examiner and consider re-filing with amendments.</div>` : ''}
+  `;
+  IPR_APP.openModal('iprDetailModal');
+}
+
+function filterIPR() {
+  const search = document.getElementById('searchIPR').value.toLowerCase();
+  const type = document.getElementById('filterType').value;
+  const status = document.getElementById('filterIPRStatus').value;
+  filteredIPR = IPR_DATA.filter(i => {
+    return (!search || i.title.toLowerCase().includes(search) || i.applicant.toLowerCase().includes(search) || i.project.toLowerCase().includes(search))
+      && (!type || i.type === type)
+      && (!status || i.status === status);
+  });
+  renderIPRTable(filteredIPR);
+}
+
+function submitIPR() {
+  const type = document.getElementById('iprType').value;
+  const title = document.getElementById('iprTitle').value.trim();
+  if (!type || !title) { IPR_APP.toast('Please fill in required fields', 'error'); return; }
+  IPR_APP.closeModal('newIPRModal');
+  IPR_APP.toast(`${type} filing submitted successfully!`, 'success');
+}
+
+function exportIPR() {
+  IPR_APP.toast('Generating IPR report...', 'info');
+}
+</script>
+</body>
+</html>

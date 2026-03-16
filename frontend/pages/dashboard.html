@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — IPR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+</head>
+<body>
+
+<div class="app-layout">
+  <main class="main-content" id="mainContent">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header stagger">
+      <div class="page-header-left">
+        <h1>Dashboard</h1>
+        <p>Welcome back! Here's an overview of your research ecosystem.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="exportReport()">📥 Export Report</button>
+        <button class="btn btn-primary" onclick="IPR_APP.openModal('newProjectModal')">➕ New Project</button>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid stagger">
+      <div class="stat-card teal">
+        <div class="stat-icon">📂</div>
+        <div class="stat-value" id="totalProjects">0</div>
+        <div class="stat-label">Total Projects</div>
+        <div class="stat-change up">↑ 12% from last month</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="approvedProjects">0</div>
+        <div class="stat-label">Approved Projects</div>
+        <div class="stat-change up">↑ 8% from last month</div>
+      </div>
+      <div class="stat-card rose">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value" id="pendingIPR">0</div>
+        <div class="stat-label">Pending IPR Filings</div>
+        <div class="stat-change down">↓ 3 new this week</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value" id="totalInvestment">₹0Cr</div>
+        <div class="stat-label">Total Investment</div>
+        <div class="stat-change up">↑ 22% from last quarter</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="grid-2 mb-3 stagger">
+      <!-- IPR Status Chart -->
+      <div class="card">
+        <div class="flex-between mb-2">
+          <h3>IPR Status Overview</h3>
+          <select class="form-control" style="width:auto;padding:0.35rem 0.75rem;font-size:0.8rem">
+            <option>This Year</option><option>Last Quarter</option><option>All Time</option>
+          </select>
+        </div>
+        <div class="chart-container">
+          <canvas id="iprDonut"></canvas>
+        </div>
+      </div>
+
+      <!-- Project Progress Chart -->
+      <div class="card">
+        <div class="flex-between mb-2">
+          <h3>Monthly Project Activity</h3>
+          <span class="text-sm text-teal">2025</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="projectLine"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT PROJECTS + ACTIVITY -->
+    <div class="grid-2 mb-3">
+
+      <!-- Recent Projects -->
+      <div class="card">
+        <div class="flex-between mb-2">
+          <h3>Recent Projects</h3>
+          <a href="projects.html" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div id="recentProjects">
+          <!-- JS filled -->
+        </div>
+      </div>
+
+      <!-- Recent IPR Activity -->
+      <div class="card">
+        <div class="flex-between mb-2">
+          <h3>IPR Activity</h3>
+          <a href="ipr.html" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div id="recentIPR">
+          <!-- JS filled -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INVESTMENT PIPELINE -->
+    <div class="card mb-3">
+      <div class="flex-between mb-2">
+        <h3>Investment Pipeline</h3>
+        <a href="investor.html" class="btn btn-gold btn-sm">💰 Investor View</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Researcher</th>
+              <th>Technology</th>
+              <th>Funding Ask</th>
+              <th>Raised</th>
+              <th>Progress</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="investTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- UPCOMING DEADLINES -->
+    <div class="card">
+      <div class="flex-between mb-2">
+        <h3>Upcoming IPR Deadlines</h3>
+        <span class="badge badge-pending">3 Urgent</span>
+      </div>
+      <div id="deadlineList"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- NEW PROJECT MODAL -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create New Project</h3>
+      <button class="modal-close" onclick="IPR_APP.closeModal('newProjectModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Project Title</label>
+        <input type="text" id="newProjTitle" class="form-control" placeholder="e.g. AI-Based Drug Discovery System" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Domain / Technology</label>
+          <select id="newProjDomain" class="form-control">
+            <option>Biotechnology</option><option>AI / Machine Learning</option><option>Nanotechnology</option>
+            <option>Renewable Energy</option><option>Robotics</option><option>Material Science</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Funding Required (₹ Lakh)</label>
+          <input type="number" id="newProjFunding" class="form-control" placeholder="50" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project Description</label>
+        <textarea id="newProjDesc" class="form-control" rows="3" placeholder="Brief description of research goals and methodology..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input type="date" id="newProjStart" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expected End Date</label>
+          <input type="date" id="newProjEnd" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Team Members (comma separated emails)</label>
+        <input type="text" id="newProjTeam" class="form-control" placeholder="colleague1@iit.ac.in, colleague2@iit.ac.in" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="IPR_APP.closeModal('newProjectModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createProject()">✅ Create Project</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="../js/app.js"></script>
+<script>
+// ─── DEMO DATA ─────────────────────────────────────
+const DEMO = {
+  stats: { totalProjects: 47, approvedProjects: 31, pendingIPR: 12, totalInvestment: '₹18.4Cr' },
+  projects: [
+    { id:1, title:'AI-Based Drug Discovery', domain:'AI/ML', progress:72, status:'Active', researcher:'Dr. Priya Sharma', date:'2025-01-15' },
+    { id:2, title:'Quantum Encryption Protocol', domain:'Cryptography', progress:45, status:'Under Review', researcher:'Dr. Aman Verma', date:'2025-02-20' },
+    { id:3, title:'BioSensor for Glucose Monitoring', domain:'Biotechnology', progress:88, status:'Active', researcher:'Dr. Neha Roy', date:'2025-03-01' },
+    { id:4, title:'Solar Cell Efficiency Research', domain:'Renewable Energy', progress:30, status:'Pending', researcher:'Prof. Suresh Iyer', date:'2025-03-10' },
+  ],
+  iprs: [
+    { title:'AI Drug Discovery Method', type:'Patent', status:'Under Review', date:'2025-03-12' },
+    { title:'BioSensor Design', type:'Patent', status:'Filed', date:'2025-03-08' },
+    { title:'Encryption Algorithm v2', type:'Copyright', status:'Approved', date:'2025-02-28' },
+    { title:'IPR Platform Logo', type:'Trademark', status:'Approved', date:'2025-02-15' },
+  ],
+  investments: [
+    { project:'AI Drug Discovery', researcher:'Dr. Priya Sharma', tech:'AI/ML', ask:'₹5Cr', raised:'₹3.2Cr', progress:64, status:'Active' },
+    { project:'BioSensor Project', researcher:'Dr. Neha Roy', tech:'BioTech', ask:'₹2Cr', raised:'₹1.8Cr', progress:90, status:'Active' },
+    { project:'Quantum Encryption', researcher:'Dr. Aman Verma', tech:'Cryptography', ask:'₹3.5Cr', raised:'₹0.7Cr', progress:20, status:'Pending' },
+    { project:'Solar Cell Research', researcher:'Prof. Suresh Iyer', tech:'Energy', ask:'₹1.5Cr', raised:'₹0.4Cr', progress:27, status:'Pending' },
+  ],
+  deadlines: [
+    { title:'Patent Renewal — AI Drug Discovery', daysLeft: 7, type:'🔴 Urgent', status:'Pending' },
+    { title:'Trademark Filing — BioSensor Brand', daysLeft: 14, type:'🟡 Soon', status:'Pending' },
+    { title:'Copyright Renewal — Encryption Algo', daysLeft: 21, type:'🟡 Soon', status:'Filed' },
+    { title:'Annual IP Review Submission', daysLeft: 30, type:'🟢 Upcoming', status:'Pending' },
+  ]
+};
+
+// ─── POPULATE PAGE ─────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    // Stats with counter animation
+    animateCount('totalProjects', DEMO.stats.totalProjects);
+    animateCount('approvedProjects', DEMO.stats.approvedProjects);
+    animateCount('pendingIPR', DEMO.stats.pendingIPR);
+    document.getElementById('totalInvestment').textContent = DEMO.stats.totalInvestment;
+
+    // Charts
+    IPR_APP.renderDonut('iprDonut',
+      [12, 8, 18, 4],
+      ['Filed', 'Under Review', 'Approved', 'Rejected'],
+      ['#FF6B8A', '#4A9EFF', '#00C9A7', '#F5A623']
+    );
+
+    IPR_APP.renderLine('projectLine',
+      ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      [
+        { label: 'New Projects', data: [3,5,4,7,6,8,5,9,7,10,8,6], borderColor: '#00C9A7', backgroundColor: 'rgba(0,201,167,0.07)', fill: true },
+        { label: 'IPR Filed', data: [2,3,3,5,4,6,4,7,5,8,6,5], borderColor: '#F5A623', backgroundColor: 'rgba(245,166,35,0.05)', fill: true },
+      ]
+    );
+
+    // Recent Projects
+    const projHtml = DEMO.projects.map(p => `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,201,167,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📂</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
+          <div style="font-size:0.75rem;color:var(--slate)">${p.domain} · ${p.researcher}</div>
+          <div class="progress-bar" style="margin-top:0.4rem">
+            <div class="progress-fill" style="width:${p.progress}%"></div>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          ${IPR_APP.statusBadge(p.status)}
+          <div style="font-size:0.72rem;color:var(--slate);margin-top:0.25rem">${p.progress}%</div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('recentProjects').innerHTML = projHtml;
+
+    // Recent IPR
+    const iprHtml = DEMO.iprs.map(i => `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">⚖️</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.875rem">${i.title}</div>
+          <div style="font-size:0.75rem;color:var(--slate)">${i.type} · ${i.date}</div>
+        </div>
+        ${IPR_APP.statusBadge(i.status)}
+      </div>
+    `).join('');
+    document.getElementById('recentIPR').innerHTML = iprHtml;
+
+    // Investment table
+    const investHtml = DEMO.investments.map(inv => `
+      <tr>
+        <td><strong>${inv.project}</strong></td>
+        <td>${inv.researcher}</td>
+        <td><span class="badge badge-review">${inv.tech}</span></td>
+        <td style="color:var(--gold)">${inv.ask}</td>
+        <td style="color:var(--teal)">${inv.raised}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <div class="progress-bar" style="flex:1;width:100px">
+              <div class="progress-fill" style="width:${inv.progress}%;${inv.progress >= 80 ? 'background:linear-gradient(90deg,var(--teal),#00e5c8)' : inv.progress >= 50 ? 'background:linear-gradient(90deg,var(--gold),#f5c842)' : 'background:linear-gradient(90deg,var(--rose),#ff8fa3)'}"></div>
+            </div>
+            <span style="font-size:0.75rem;color:var(--slate)">${inv.progress}%</span>
+          </div>
+        </td>
+        <td>${IPR_APP.statusBadge(inv.status)}</td>
+      </tr>
+    `).join('');
+    document.getElementById('investTable').innerHTML = investHtml;
+
+    // Deadlines
+    const deadlineHtml = DEMO.deadlines.map(d => `
+      <div style="display:flex;align-items:center;gap:1rem;padding:0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);margin-bottom:0.6rem">
+        <span style="font-size:1.2rem">${d.type.split(' ')[0]}</span>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.875rem">${d.title}</div>
+          <div style="font-size:0.75rem;color:var(--slate)">${d.daysLeft} days remaining</div>
+        </div>
+        ${IPR_APP.statusBadge(d.status)}
+        <button class="btn btn-outline btn-sm" onclick="IPR_APP.toast('Reminder set!','success')">🔔 Remind</button>
+      </div>
+    `).join('');
+    document.getElementById('deadlineList').innerHTML = deadlineHtml;
+
+    // Update page title in topbar
+    document.getElementById('pageTitle').textContent = 'Dashboard';
+
+  }, 100);
+});
+
+function animateCount(id, target, prefix = '', suffix = '') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let start = 0;
+  const step = Math.ceil(target / 40);
+  const interval = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = prefix + start + suffix;
+    if (start >= target) clearInterval(interval);
+  }, 30);
+}
+
+function createProject() {
+  const title = document.getElementById('newProjTitle').value.trim();
+  if (!title) { IPR_APP.toast('Please enter a project title', 'error'); return; }
+  IPR_APP.closeModal('newProjectModal');
+  IPR_APP.toast('Project created successfully! Redirecting...', 'success');
+  setTimeout(() => window.location.href = 'projects.html', 1200);
+}
+
+function exportReport() {
+  IPR_APP.toast('Generating report... Download will start shortly.', 'info');
+}
+</script>
+</body>
+</html>
